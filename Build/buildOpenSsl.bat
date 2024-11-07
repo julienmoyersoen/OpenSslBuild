@@ -6,9 +6,9 @@ if "%OPENSSL_VERSION%"=="" (
     echo Usage: buildOpenSsl.bat [openssl version to build]
     exit /b 1
 )
-
 set OPENSSL_SOURCE=https://github.com/openssl/openssl/releases/download/openssl-3.0.15/openssl-%OPENSSL_VERSION%.tar.gz
 
+:: Download the openssl sources
 echo "Downloading OpenSSL source from: %OPENSSL_SOURCE%..."
 curl -SL --output openssl.tar.gz %OPENSSL_SOURCE%
 
@@ -32,8 +32,16 @@ mkdir %OPENSSL_BUILD_DIR%
 :: Build from static folder
 pushd %OPENSSL_BUILD_DIR%
 
+echo Configuring OpenSSL...
 perl ..\Configure VC-WIN64A -static
+
+echo Building OpenSSL...
 nmake
+
+echo Installing OpenSSL...
 nmake install
 
 popd
+
+:: Cleanup
+del /q openssl.tar.gz
