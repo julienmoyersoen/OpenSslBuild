@@ -42,12 +42,18 @@ robocopy "c:\install\OpenSSL\lib" "%CURL_DEPS_DIR%\lib" /e /s
 echo Building Curl...
 pushd %CURL_SOURCE_DIR%\curl-%CURL_VERSION%\winbuild
 nmake /f Makefile.vc mode=static VC=16 WITH_SSL=static MACHINE=x64 GEN_PDB=yes  WITH_DEVEL=..\..\deps\
+nmake /f Makefile.vc mode=static VC=16 WITH_SSL=static MACHINE=x64 GEN_PDB=yes  WITH_DEVEL=..\..\deps\ DEBUG=yes
 popd
 
 :: Copy the built files to the install volume
 echo Copying built files to install volume...
-set CURL_BUILD_DIR= C:\src\curl\curl-%CURL_VERSION%\builds\libcurl-vc16-x64-release-static-ssl-static-ipv6-sspi
+
 set CURL_INSTALL_DIR= c:\install\curl
-robocopy %CURL_BUILD_DIR%\include %CURL_INSTALL_DIR%\include /e /s
-robocopy %CURL_BUILD_DIR%\lib %CURL_INSTALL_DIR%\lib /e /s
-robocopy %CURL_BUILD_DIR%\bin %CURL_INSTALL_DIR%\bin /e /s
+setlocal enabledelayedexpansion
+:: install for both debug and release
+for %%i in (debug release) do (
+    set CURL_BUILD_DIR=C:\src\curl\curl-%CURL_VERSION%\builds\libcurl-vc16-x64-%%i-static-ssl-static-ipv6-sspi
+    robocopy !CURL_BUILD_DIR!\include %CURL_INSTALL_DIR%\include /e /s
+    robocopy !CURL_BUILD_DIR!\lib %CURL_INSTALL_DIR%\lib /e /s
+    robocopy !CURL_BUILD_DIR!\bin %CURL_INSTALL_DIR%\bin /e /s
+)
