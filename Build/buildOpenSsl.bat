@@ -43,5 +43,10 @@ nmake install
 
 popd
 
+:: Copy the binaries to the install volume
+echo Copying OpenSSL binaries to install volume...
+robocopy "c:\Program Files\OpenSSL" "c:\install\OpenSSL" /e /s
+rmdir /s /q %OPENSSL_SOURCE_DIR%
+
 :: Cleanup
 del /q openssl.tar.gz
