@@ -9,7 +9,7 @@ if "%OPENSSL_VERSION%"=="" (
 set OPENSSL_SOURCE=https://github.com/openssl/openssl/releases/download/openssl-3.0.15/openssl-%OPENSSL_VERSION%.tar.gz
 
 :: Download the openssl sources
-echo "Downloading OpenSSL source from: %OPENSSL_SOURCE%..."
+echo Downloading OpenSSL source from: %OPENSSL_SOURCE%...
 curl -SL --output openssl.tar.gz %OPENSSL_SOURCE%
 
 set OPENSSL_SOURCE_DIR=c:\src\openssl

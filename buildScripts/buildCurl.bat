@@ -10,7 +10,7 @@ if "%CURL_VERSION%"=="" (
 set CURL_SOURCE=https://curl.se/download/curl-%CURL_VERSION%.tar.gz
 
 :: Download the curl sources
-echo "Downloading Curl source from: %CURL_SOURCE%..."
+echo Downloading Curl source from: %CURL_SOURCE%...
 curl -SL --output curl.tar.gz %CURL_SOURCE%
 
 set CURL_SOURCE_DIR=c:\src\curl
@@ -34,11 +34,20 @@ mkdir %CURL_DEPS_DIR%\lib
 mkdir %CURL_DEPS_DIR%\bin
 
 ::Copy the openssl files from install volume to the deps folder
+echo Copying OpenSSL files to deps folder...
 robocopy "c:\install\OpenSSL\include" "%CURL_DEPS_DIR%\include" /e /s
 robocopy "c:\install\OpenSSL\lib" "%CURL_DEPS_DIR%\lib" /e /s
 
 :: Build from the winbuild directory
+echo Building Curl...
 pushd %CURL_SOURCE_DIR%\curl-%CURL_VERSION%\winbuild
 nmake /f Makefile.vc mode=static VC=16 WITH_SSL=static MACHINE=x64 GEN_PDB=yes  WITH_DEVEL=..\..\deps\
 popd
 
+:: Copy the built files to the install volume
+echo Copying built files to install volume...
+set CURL_BUILD_DIR= C:\src\curl\curl-%CURL_VERSION%\builds\libcurl-vc16-x64-release-static-ssl-static-ipv6-sspi
+set CURL_INSTALL_DIR= c:\install\curl
+robocopy %CURL_BUILD_DIR%\include %CURL_INSTALL_DIR%\include /e /s
+robocopy %CURL_BUILD_DIR%\lib %CURL_INSTALL_DIR%\lib /e /s
+robocopy %CURL_BUILD_DIR%\bin %CURL_INSTALL_DIR%\bin /e /s
